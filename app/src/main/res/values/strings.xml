@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">EasyEntry</string>
+    <string name="Residential">Residential</string>
+    <string name="Commercial">Commercial</string>
+    <string name="Enquiry">Enquiry</string>
+    <string name="Name">Name</string>
+    <string name="FlatNumber">FlatNumber</string>
+    <string name="Submit">Submit</string>
+    <string name="OTP">OTP</string>
+
+
+</resources>
