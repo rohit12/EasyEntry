@@ -14,11 +14,14 @@ import entry.easyentry.R;
 import entry.easyentry.dao.Dao;
 import entry.easyentry.dao.FirebaseVisitorDao;
 import entry.easyentry.models.Visitor;
+import entry.easyentry.services.OTPService;
 
 public class ResidentialActivity extends AppCompatActivity {
 
     private boolean verifiedNumber = false;
     private Dao visitorDao;
+    private OTPService otpService;
+
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
 
@@ -40,8 +43,11 @@ public class ResidentialActivity extends AppCompatActivity {
     @BindView(R.id.btnResidentialSubmit)
     Button btnSubmit;
 
+    @BindView(R.id.btnResidentialVerifyPhoneNumber)
+    Button btnVerifyNumber;
+
     @OnClick(R.id.btnResidentialSubmit)
-    void submitAndVerify(){
+    void submit(){
         String name = editTextName.getText().toString();
         String date = editTextDate.getText().toString();
         String flatNumber = editTextFlatNumber.getText().toString();
@@ -49,9 +55,10 @@ public class ResidentialActivity extends AppCompatActivity {
         String timeIn = editTextTimeIn.getText().toString();
 
         Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber);
+    }
 
-        visitorDao.write(visitor);
-
+    @OnClick(R.id.btnResidentialVerifyPhoneNumber)
+    void verify(){
     }
 
     @Override

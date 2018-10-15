@@ -86,13 +86,13 @@
         android:layout_width="97dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="@string/Submit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintEnd_toStartOf="@+id/btnResidentialVerifyPhoneNumber"
+        app:layout_constraintHorizontal_bias="0.692"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialPhoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialOTP" />
 
     <EditText
         android:id="@+id/editTextResidentialOTP"
@@ -104,9 +104,19 @@
         android:ems="10"
         android:hint="@string/OTP"
         android:inputType="number"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextResidentialPhoneNumber" />
+
+    <Button
+        android:id="@+id/btnResidentialVerifyPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="28dp"
+        android:text="Verify Phone Number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialOTP" />
 </android.support.constraint.ConstraintLayout>
