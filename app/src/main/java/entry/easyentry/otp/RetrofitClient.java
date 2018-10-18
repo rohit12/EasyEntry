@@ -1,4 +1,4 @@
-package entry.easyentry.otp.utils;
+package entry.easyentry.otp;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
