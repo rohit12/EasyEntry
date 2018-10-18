@@ -1,4 +1,4 @@
-package entry.easyentry.otp.utils;
+package entry.easyentry.otp;
 
 import entry.easyentry.otp.OTPRetrofit;
 
