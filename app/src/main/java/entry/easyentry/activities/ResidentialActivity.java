@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,10 +28,10 @@ import entry.easyentry.dao.FirebaseVisitorDao;
 import entry.easyentry.models.Visitor;
 import entry.easyentry.services.OTPService;
 import entry.easyentry.services.TwoFactorOTP;
+import entry.easyentry.utils.Utils;
 
 public class ResidentialActivity extends AppCompatActivity {
 
-    private boolean verifiedNumber = false;
     private Dao visitorDao;
     private OTPService otpService;
     private String sessionID;
@@ -39,9 +41,6 @@ public class ResidentialActivity extends AppCompatActivity {
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
 
-    @BindView(R.id.editTextResidentialDate)
-    EditText editTextDate;
-
     @BindView(R.id.editTextResidentialFlatNumber)
     EditText editTextFlatNumber;
 
@@ -50,9 +49,6 @@ public class ResidentialActivity extends AppCompatActivity {
 
     @BindView(R.id.editTextResidentialPhoneNumber)
     EditText editTextPhoneNumber;
-
-    @BindView(R.id.editTextResidentialTimein)
-    EditText editTextTimeIn;
 
     @BindView(R.id.btnResidentialSubmit)
     Button btnSubmit;
@@ -74,11 +70,14 @@ public class ResidentialActivity extends AppCompatActivity {
     }
 
     void storeVisitor(){
+
+
         String name = editTextName.getText().toString();
-        String date = editTextDate.getText().toString();
+        String date = Utils.getCurrentDate();
         String flatNumber = editTextFlatNumber.getText().toString();
         String phoneNumber = editTextPhoneNumber.getText().toString();
-        String timeIn = editTextTimeIn.getText().toString();
+        String timeIn = Utils.getCurrentTime();
+
         Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber);
         visitorDao.write(visitor);
         Toast.makeText(this,"Visitor saved", Toast.LENGTH_LONG).show();
@@ -95,6 +94,9 @@ public class ResidentialActivity extends AppCompatActivity {
                 isNumberVerified = intent.getBooleanExtra("otp-verified",false);
                 if (isNumberVerified){
                     storeVisitor();
+                }
+                else {
+                    Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_LONG);
                 }
             }
         }

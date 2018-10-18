@@ -38,35 +38,6 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextResidentialName" />
 
     <EditText
-        android:id="@+id/editTextResidentialTimein"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Time in"
-        android:inputType="time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialFlatNumber" />
-
-    <EditText
-        android:id="@+id/editTextResidentialDate"
-        android:layout_width="wrap_content"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Date"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialTimein" />
-
-    <EditText
         android:id="@+id/editTextResidentialPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,7 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialDate" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialFlatNumber" />
 
     <Button
         android:id="@+id/btnResidentialSubmit"
