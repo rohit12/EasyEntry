@@ -2,7 +2,7 @@ package entry.easyentry.services;
 
 public interface OTPService {
 
-    boolean sendOTP(String phoneNumber);
+    void sendOTP(String phoneNumber);
 
-    boolean verifyOTP(String code);
+    void verifyOTP(String code, String sessionID);
 }
