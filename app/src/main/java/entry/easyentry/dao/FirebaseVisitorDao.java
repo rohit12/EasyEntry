@@ -15,22 +15,22 @@ public class FirebaseVisitorDao implements Dao<Visitor> {
 
 
     @Override
-    public void write(Visitor visitor) {
-        database.child("visitors").child(visitor.getPhoneNumber()).setValue(visitor);
+    public void writeRecord(Visitor visitor) {
+        database.child("visitors").push().setValue(visitor);
     }
 
     @Override
-    public Visitor readVisitor() {
+    public Visitor readRecord() {
         return null;
     }
 
     @Override
-    public void updateVisitor(Visitor visitor) {
+    public void updateRecord(Visitor visitor) {
 
     }
 
     @Override
-    public void deleteVisitor(Visitor visitor) {
+    public void deleteRecord(Visitor visitor) {
 
     }
 }
