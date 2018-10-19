@@ -7,17 +7,12 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +31,9 @@ public class ResidentialActivity extends AppCompatActivity {
     private OTPService otpService;
     private String sessionID;
     private boolean isNumberVerified;
+    private FirebaseUser currentUser;
     private static final String TAG = "ResidentialActivity";
+    String society; // TODO fetch society string from current user's records
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -78,8 +75,8 @@ public class ResidentialActivity extends AppCompatActivity {
         String phoneNumber = editTextPhoneNumber.getText().toString();
         String timeIn = Utils.getCurrentTime();
 
-        Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber);
-        visitorDao.write(visitor);
+        Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society);
+        visitorDao.writeRecord(visitor);
         Toast.makeText(this,"Visitor saved", Toast.LENGTH_LONG).show();
     }
 
@@ -108,6 +105,8 @@ public class ResidentialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_residential);
         visitorDao = new FirebaseVisitorDao();
         otpService = new TwoFactorOTP(this);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        society = "None";
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("otp-service"));
         ButterKnife.bind(this);
     }

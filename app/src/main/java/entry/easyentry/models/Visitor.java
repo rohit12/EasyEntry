@@ -7,16 +7,26 @@ public class Visitor {
     private String timeIn;
     private String date;
     private String phoneNumber;
+    private String society;
 
-    public Visitor(String name, String flatNumber, String timeIn, String date, String phoneNumber) {
+    public Visitor(String name, String flatNumber, String timeIn, String date, String phoneNumber, String society) {
         this.name = name;
         this.flatNumber = flatNumber;
         this.timeIn = timeIn;
         this.date = date;
         this.phoneNumber = phoneNumber;
+        this.society = society;
     }
 
     public Visitor() {
+    }
+
+    public String getSociety() {
+        return society;
+    }
+
+    public void setSociety(String society) {
+        this.society = society;
     }
 
     public String getName() {
