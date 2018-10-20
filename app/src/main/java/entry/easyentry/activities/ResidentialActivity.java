@@ -28,12 +28,6 @@ import entry.easyentry.utils.Utils;
 
 public class ResidentialActivity extends AppCompatActivity {
 
-    //Flow for the activity:
-    //1. Visitor enters his details on the screen.
-    //2. Check if number exist and if it needs to be verified.
-    //3. if number exists, no need to verify. Store details and redirect to home page.
-    //4. if number does not exist, verify number. Store details and redirect to home page.
-
     private FirebaseVisitorDao visitorDao;
     private OTPService otpService;
     private String sessionID;
