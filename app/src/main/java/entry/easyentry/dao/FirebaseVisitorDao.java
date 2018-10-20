@@ -55,7 +55,7 @@ public class FirebaseVisitorDao implements Dao<Visitor> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Intent intent = new Intent("visitor-exists");
-                if (dataSnapshot!=null){
+                if (dataSnapshot.getValue()!=null){
                     Log.d(TAG, "onDataChange: DataSnapshot exists");
                     intent.putExtra("phoneNumber",true);
                 }
