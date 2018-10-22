@@ -4,12 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,7 +22,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import entry.easyentry.R;
-import entry.easyentry.dao.Dao;
 import entry.easyentry.dao.FirebaseVisitorDao;
 import entry.easyentry.models.Visitor;
 import entry.easyentry.services.OTPService;
@@ -35,6 +37,7 @@ public class ResidentialActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private static final String TAG = "ResidentialActivity";
     String society; // TODO fetch society string from current user's records
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -54,6 +57,20 @@ public class ResidentialActivity extends AppCompatActivity {
     @BindView(R.id.btnResidentialVerifyPhoneNumber)
     Button btnVerifyNumber;
 
+    @BindView(R.id.btnResidentialTakePhoto)
+    Button btnTakePhoto;
+
+    @BindView(R.id.imageViewResidential)
+    ImageView imageView;
+
+    @OnClick(R.id.btnResidentialTakePhoto)
+    void dispatchTakePictureIntent(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(takePictureIntent.resolveActivity(getPackageManager())!=null){
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
     @OnClick(R.id.btnResidentialSubmit)
     void submit(){
         String phoneNumber = editTextPhoneNumber.getText().toString();
@@ -65,6 +82,16 @@ public class ResidentialActivity extends AppCompatActivity {
         String code = editTextOTP.getText().toString();
         otpService.verifyOTP(code, sessionID);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap)extras.get("data");
+            imageView.setImageBitmap(imageBitmap);
+        }
     }
 
     void storeVisitor(){
@@ -111,7 +138,7 @@ public class ResidentialActivity extends AppCompatActivity {
                     storeVisitor();
                 }
                 else {
-                    Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_LONG);
+                    Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_LONG).show();
                 }
             }
         }

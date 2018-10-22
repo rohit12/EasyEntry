@@ -3,6 +3,11 @@
     package="entry.easyentry">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ResidentialActivity" />
-        <activity android:name=".activities.MainActivity"></activity>
+        <activity android:name=".activities.MainActivity"/>
+
     </application>
 
 </manifest>
