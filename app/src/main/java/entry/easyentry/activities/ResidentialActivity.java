@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +19,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,12 +47,13 @@ public class ResidentialActivity extends AppCompatActivity {
     private FirebaseVisitorDao visitorDao;
     private OTPService otpService;
     private String sessionID;
-    private boolean isNumberVerified;
     private FirebaseUser currentUser;
     private static final String TAG = "ResidentialActivity";
-    String society; // TODO fetch society string from current user's records
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    String currentPhotoPath;
+    private String society; // TODO fetch society string from current user's records
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private String currentPhotoPath;
+    private StorageReference storageReference;
+    private Uri photoURI;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -89,7 +96,7 @@ public class ResidentialActivity extends AppCompatActivity {
 
             // Continue only if the File was successfully created
             if(photoFile!=null){
-                Uri photoURI = FileProvider.getUriForFile(this, "entry.easyentry",photoFile);
+                photoURI = FileProvider.getUriForFile(this, "entry.easyentry",photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 
@@ -117,8 +124,28 @@ public class ResidentialActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap)extras.get("data");
             imageView.setImageBitmap(imageBitmap);
+            storeImageToFirebaseCloud();
 //            galleryAddPic();
         }
+    }
+
+    private void storeImageToFirebaseCloud(){
+        String imageName = currentPhotoPath.substring(currentPhotoPath.lastIndexOf("/")+1);
+        StorageReference imageRef = storageReference.child("visitors/"+society+"/"+imageName);
+        imageRef.putFile(photoURI)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(ResidentialActivity.this, "File uploaded successfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: "+e.getMessage());
+                        Toast.makeText(ResidentialActivity.this, "File not uploaded. Failure to upload", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private File createImageFile() throws IOException {
@@ -142,7 +169,7 @@ public class ResidentialActivity extends AppCompatActivity {
         this.sendBroadcast(mediaScanIntent);
     }
 
-    void storeVisitor(){
+    private void storeVisitor(){
 
 
         String name = editTextName.getText().toString();
@@ -181,7 +208,7 @@ public class ResidentialActivity extends AppCompatActivity {
                 sessionID = intent.getStringExtra("otp-sessionID");
             }
             else if(method.equals("verifyOtp")){
-                isNumberVerified = intent.getBooleanExtra("otp-verified",false);
+                boolean isNumberVerified = intent.getBooleanExtra("otp-verified", false);
                 if (isNumberVerified){
                     storeVisitor();
                 }
@@ -199,6 +226,7 @@ public class ResidentialActivity extends AppCompatActivity {
         visitorDao = new FirebaseVisitorDao(this);
         otpService = new TwoFactorOTP(this);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        storageReference = FirebaseStorage.getInstance().getReference();
         society = "None";
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("otp-service"));
         LocalBroadcastManager.getInstance(this).registerReceiver(phoneNumberVerifier, new IntentFilter("visitor-exists"));
