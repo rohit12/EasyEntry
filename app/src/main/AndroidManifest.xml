@@ -9,6 +9,7 @@
     <uses-feature android:name="android.hardware.camera"
         android:required="false" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +26,16 @@
         </activity>
         <activity android:name=".activities.ResidentialActivity" />
         <activity android:name=".activities.MainActivity"/>
+        
+        <provider
+            android:authorities="entry.easyentry"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
 
     </application>
 

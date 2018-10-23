@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +20,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +46,7 @@ public class ResidentialActivity extends AppCompatActivity {
     private static final String TAG = "ResidentialActivity";
     String society; // TODO fetch society string from current user's records
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    String currentPhotoPath;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -66,8 +75,25 @@ public class ResidentialActivity extends AppCompatActivity {
     @OnClick(R.id.btnResidentialTakePhoto)
     void dispatchTakePictureIntent(){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
         if(takePictureIntent.resolveActivity(getPackageManager())!=null){
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            // Create the File where the photo should go
+            File photoFile = null;
+            try{
+                photoFile = createImageFile();
+            }
+            catch (IOException ex){
+                Log.d(TAG, "dispatchTakePictureIntent: IO exception occurred");
+                Toast.makeText(this, "IOException occurred", Toast.LENGTH_LONG).show();
+            }
+
+            // Continue only if the File was successfully created
+            if(photoFile!=null){
+                Uri photoURI = FileProvider.getUriForFile(this, "entry.easyentry",photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+            }
         }
     }
 
@@ -91,7 +117,29 @@ public class ResidentialActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap)extras.get("data");
             imageView.setImageBitmap(imageBitmap);
+//            galleryAddPic();
         }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
     }
 
     void storeVisitor(){
