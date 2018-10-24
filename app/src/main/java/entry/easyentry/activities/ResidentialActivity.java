@@ -125,7 +125,6 @@ public class ResidentialActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap)extras.get("data");
             imageView.setImageBitmap(imageBitmap);
 //            storeImageToFirebaseCloud();
-//            galleryAddPic();
         }
     }
 
@@ -162,14 +161,6 @@ public class ResidentialActivity extends AppCompatActivity {
         return image;
     }
 
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
-
     private void storeVisitor(){
 
         String name = editTextName.getText().toString();
@@ -177,21 +168,31 @@ public class ResidentialActivity extends AppCompatActivity {
         String flatNumber = editTextFlatNumber.getText().toString();
         String phoneNumber = editTextPhoneNumber.getText().toString();
         String timeIn = Utils.getCurrentTime();
-        String photoLocation = storeImageToFirebaseCloud();
+        String photoLocation = "yoyo";//storeImageToFirebaseCloud();
 
         Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society, photoLocation);
         visitorDao.writeRecord(visitor);
         Toast.makeText(this,"Visitor saved", Toast.LENGTH_LONG).show();
     }
 
-    private BroadcastReceiver phoneNumberVerifier = new BroadcastReceiver() {
+
+    /*
+    The submit button asks the database if a visitor with a given phone number exists. If it does, then
+    it sends out a LocalBroadcastMessage that this receiver picks up. This receiver is intended to
+    inform this activity whether a given number exists in the database. If the number exists, the visitor
+    is stored otherwise it calls the function to send out the OTP.
+     */
+    private BroadcastReceiver userInformationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive: phone number verifier intent received");
             boolean doesNumberExist = intent.getBooleanExtra("phoneNumber", false);
+            Visitor v = (Visitor) intent.getExtras().getSerializable("visitor");
             if (doesNumberExist){
                 Log.d(TAG, "onReceive: Number exists");
                 Toast.makeText(ResidentialActivity.this,"This number exists in database. Not verifying",Toast.LENGTH_LONG).show();
+                editTextFlatNumber.setText(v.getFlatNumber());
+                editTextName.setText(v.getName());
                 storeVisitor();
             }
             else {
@@ -201,7 +202,7 @@ public class ResidentialActivity extends AppCompatActivity {
         }
     };
 
-    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver otpMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String method = intent.getStringExtra("method");
@@ -229,15 +230,15 @@ public class ResidentialActivity extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
         society = "None";
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("otp-service"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(phoneNumberVerifier, new IntentFilter("visitor-exists"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(otpMessageReceiver, new IntentFilter("otp-service"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(userInformationReceiver, new IntentFilter("visitor-exists"));
         ButterKnife.bind(this);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(phoneNumberVerifier);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(otpMessageReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userInformationReceiver);
         super.onDestroy();
     }
 }
