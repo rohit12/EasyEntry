@@ -23,8 +23,8 @@ public class Utils {
 
     public static boolean isEditTextEmpty(EditText editText){
         if (editText.getText().toString().trim().length()>0)
-            return true;
-        return false;
+            return false;
+        return true;
     }
 
 }
