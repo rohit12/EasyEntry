@@ -1,6 +1,8 @@
 package entry.easyentry.models;
 
-public class Visitor {
+import java.io.Serializable;
+
+public class Visitor implements Serializable {
 
     private String name;
     private String flatNumber;

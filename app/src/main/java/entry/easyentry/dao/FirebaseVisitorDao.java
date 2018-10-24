@@ -50,14 +50,20 @@ public class FirebaseVisitorDao implements Dao<Visitor> {
     }
 
     public void checkIfVisitorExists(String phoneNumber){
-        Query query = database.child("visitors").orderByChild("phoneNumber").equalTo(phoneNumber);
+        Query query = database.child("visitors").orderByChild("phoneNumber").equalTo(phoneNumber).limitToFirst(1);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Intent intent = new Intent("visitor-exists");
+                Iterable<DataSnapshot> it = dataSnapshot.getChildren();
+                Visitor v = null;
+                for (DataSnapshot d: it){
+                    v = d.getValue(Visitor.class);
+                }
                 if (dataSnapshot.getValue()!=null){
                     Log.d(TAG, "onDataChange: DataSnapshot exists");
                     intent.putExtra("phoneNumber",true);
+                    intent.putExtra("visitor",v);
                 }
                 else {
                     Log.d(TAG, "onDataChange: DataSnapshot does not exists");
