@@ -124,14 +124,14 @@ public class ResidentialActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap)extras.get("data");
             imageView.setImageBitmap(imageBitmap);
-            storeImageToFirebaseCloud();
+//            storeImageToFirebaseCloud();
 //            galleryAddPic();
         }
     }
 
-    private void storeImageToFirebaseCloud(){
-        String imageName = currentPhotoPath.substring(currentPhotoPath.lastIndexOf("/")+1);
-        StorageReference imageRef = storageReference.child("visitors/"+society+"/"+imageName);
+    private String storeImageToFirebaseCloud(){
+        String imageName = "visitors/" + society +"/" + currentPhotoPath.substring(currentPhotoPath.lastIndexOf("/")+1);
+        StorageReference imageRef = storageReference.child(imageName);
         imageRef.putFile(photoURI)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -146,6 +146,7 @@ public class ResidentialActivity extends AppCompatActivity {
                         Toast.makeText(ResidentialActivity.this, "File not uploaded. Failure to upload", Toast.LENGTH_SHORT).show();
                     }
                 });
+        return imageName;
     }
 
     private File createImageFile() throws IOException {
@@ -171,14 +172,14 @@ public class ResidentialActivity extends AppCompatActivity {
 
     private void storeVisitor(){
 
-
         String name = editTextName.getText().toString();
         String date = Utils.getCurrentDate();
         String flatNumber = editTextFlatNumber.getText().toString();
         String phoneNumber = editTextPhoneNumber.getText().toString();
         String timeIn = Utils.getCurrentTime();
+        String photoLocation = storeImageToFirebaseCloud();
 
-        Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society);
+        Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society, photoLocation);
         visitorDao.writeRecord(visitor);
         Toast.makeText(this,"Visitor saved", Toast.LENGTH_LONG).show();
     }

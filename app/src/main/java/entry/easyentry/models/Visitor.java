@@ -8,17 +8,27 @@ public class Visitor {
     private String date;
     private String phoneNumber;
     private String society;
+    private String photoLocation;
 
-    public Visitor(String name, String flatNumber, String timeIn, String date, String phoneNumber, String society) {
+    public Visitor(String name, String flatNumber, String timeIn, String date, String phoneNumber, String society, String photoLocation) {
         this.name = name;
         this.flatNumber = flatNumber;
         this.timeIn = timeIn;
         this.date = date;
         this.phoneNumber = phoneNumber;
         this.society = society;
+        this.photoLocation = photoLocation;
     }
 
     public Visitor() {
+    }
+
+    public String getPhotoLocation() {
+        return photoLocation;
+    }
+
+    public void setPhotoLocation(String photoLocation) {
+        this.photoLocation = photoLocation;
     }
 
     public String getSociety() {
