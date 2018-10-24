@@ -14,6 +14,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -216,6 +217,8 @@ public class ResidentialActivity extends AppCompatActivity {
 //                storeVisitor();
             }
             else {
+                editTextOTP.setVisibility(View.VISIBLE);
+                btnVerifyNumber.setVisibility(View.VISIBLE);
                 otpService.sendOTP(editTextPhoneNumber.getText().toString());
                 Toast.makeText(ResidentialActivity.this, "Sending OTP. Number not found in database.",Toast.LENGTH_LONG).show();
             }
@@ -254,6 +257,9 @@ public class ResidentialActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(otpMessageReceiver, new IntentFilter("otp-service"));
         LocalBroadcastManager.getInstance(this).registerReceiver(userInformationReceiver, new IntentFilter("visitor-exists"));
         ButterKnife.bind(this);
+        editTextPhoneNumber.requestFocus(); //puts focus on the phone number
+        editTextOTP.setVisibility(View.GONE);
+        btnVerifyNumber.setVisibility(View.GONE);
     }
 
     @Override
