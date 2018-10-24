@@ -54,6 +54,7 @@ public class ResidentialActivity extends AppCompatActivity {
     private String currentPhotoPath;
     private StorageReference storageReference;
     private Uri photoURI;
+    private boolean isNumberVerified;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -76,8 +77,26 @@ public class ResidentialActivity extends AppCompatActivity {
     @BindView(R.id.btnResidentialTakePhoto)
     Button btnTakePhoto;
 
+    @BindView(R.id.btnResidentialEntry)
+    Button btnEntry;
+
     @BindView(R.id.imageViewResidential)
     ImageView imageView;
+
+    @OnClick(R.id.btnResidentialEntry)
+    void easyEntry(){
+        if (isNumberVerified){
+            if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber)) && imageView.getDrawable()!=null){
+                storeVisitor();
+            }
+            else{
+                Toast.makeText(this, "One of the fields has not been populated", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            Toast.makeText(this, "Number isn't verified. Verify number, try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @OnClick(R.id.btnResidentialTakePhoto)
     void dispatchTakePictureIntent(){
@@ -168,7 +187,7 @@ public class ResidentialActivity extends AppCompatActivity {
         String flatNumber = editTextFlatNumber.getText().toString();
         String phoneNumber = editTextPhoneNumber.getText().toString();
         String timeIn = Utils.getCurrentTime();
-        String photoLocation = "yoyo";//storeImageToFirebaseCloud();
+        String photoLocation = storeImageToFirebaseCloud();
 
         Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society, photoLocation);
         visitorDao.writeRecord(visitor);
@@ -193,7 +212,8 @@ public class ResidentialActivity extends AppCompatActivity {
                 Toast.makeText(ResidentialActivity.this,"This number exists in database. Not verifying",Toast.LENGTH_LONG).show();
                 editTextFlatNumber.setText(v.getFlatNumber());
                 editTextName.setText(v.getName());
-                storeVisitor();
+                isNumberVerified = true;
+//                storeVisitor();
             }
             else {
                 otpService.sendOTP(editTextPhoneNumber.getText().toString());
@@ -210,9 +230,10 @@ public class ResidentialActivity extends AppCompatActivity {
                 sessionID = intent.getStringExtra("otp-sessionID");
             }
             else if(method.equals("verifyOtp")){
-                boolean isNumberVerified = intent.getBooleanExtra("otp-verified", false);
+                isNumberVerified = intent.getBooleanExtra("otp-verified", false);
                 if (isNumberVerified){
-                    storeVisitor();
+//                    storeVisitor();
+                    btnEntry.performClick();
                 }
                 else {
                     Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_LONG).show();

@@ -1,5 +1,7 @@
 package entry.easyentry.utils;
 
+import android.widget.EditText;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -17,6 +19,12 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");
         String strDate = sdf.format(calendar.getTime());
         return strDate;
+    }
+
+    public static boolean isEditTextEmpty(EditText editText){
+        if (editText.getText().toString().trim().length()>0)
+            return true;
+        return false;
     }
 
 }
