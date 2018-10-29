@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -40,13 +41,16 @@ import entry.easyentry.R;
 import entry.easyentry.dao.FirebaseVisitorDao;
 import entry.easyentry.models.Visitor;
 import entry.easyentry.services.OTPService;
+import entry.easyentry.services.SMSService;
 import entry.easyentry.services.TwoFactorOTP;
+import entry.easyentry.services.TwoFactorSMS;
 import entry.easyentry.utils.Utils;
 
 public class ResidentialActivity extends AppCompatActivity {
 
     private FirebaseVisitorDao visitorDao;
     private OTPService otpService;
+    private SMSService smsService;
     private String sessionID;
     private FirebaseUser currentUser;
     private static final String TAG = "ResidentialActivity";
@@ -56,6 +60,7 @@ public class ResidentialActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri photoURI;
     private boolean isNumberVerified;
+    private String phoneNumber;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -87,9 +92,19 @@ public class ResidentialActivity extends AppCompatActivity {
     @OnClick(R.id.btnResidentialEntry)
     void easyEntry(){
         if (isNumberVerified){
-            if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber)) && imageView.getDrawable()!=null){
-                storeVisitor();
+            if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber))){
+                if (imageView.getDrawable()!=null) {
+                    storeVisitor();
+                    smsService.sendSMS(phoneNumber, "Abhishek", editTextName.getText().toString());
+                }
+                else{
+                    Toast.makeText(this,"Photo not taken. Storing data without photo",Toast.LENGTH_SHORT).show();
+                    storeVisitor();
+
+                }
+
             }
+
             else{
                 Toast.makeText(this, "One of the fields has not been populated", Toast.LENGTH_SHORT).show();
             }
@@ -97,6 +112,11 @@ public class ResidentialActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Number isn't verified. Verify number, try again.", Toast.LENGTH_SHORT).show();
         }
+
+        /*
+         TODO Send SMS to flat owner that visitor is here to see him
+         1. Get phone number to send sms to and use the sms service to achieve sending sms.
+         */
     }
 
     @OnClick(R.id.btnResidentialTakePhoto)
@@ -141,10 +161,11 @@ public class ResidentialActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap)extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
-//            storeImageToFirebaseCloud();
+            File imgFile = new File(currentPhotoPath);
+            if (imgFile.exists()){
+                Bitmap bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                imageView.setImageBitmap(bmp);
+            }
         }
     }
 
@@ -210,7 +231,7 @@ public class ResidentialActivity extends AppCompatActivity {
             Visitor v = (Visitor) intent.getExtras().getSerializable("visitor");
             if (doesNumberExist){
                 Log.d(TAG, "onReceive: Number exists");
-                Toast.makeText(ResidentialActivity.this,"This number exists in database. Not verifying",Toast.LENGTH_LONG).show();
+                Toast.makeText(ResidentialActivity.this,"This number exists in database. Not verifying",Toast.LENGTH_SHORT).show();
                 editTextFlatNumber.setText(v.getFlatNumber());
                 editTextName.setText(v.getName());
                 isNumberVerified = true;
@@ -220,7 +241,7 @@ public class ResidentialActivity extends AppCompatActivity {
                 editTextOTP.setVisibility(View.VISIBLE);
                 btnVerifyNumber.setVisibility(View.VISIBLE);
                 otpService.sendOTP(editTextPhoneNumber.getText().toString());
-                Toast.makeText(ResidentialActivity.this, "Sending OTP. Number not found in database.",Toast.LENGTH_LONG).show();
+                Toast.makeText(ResidentialActivity.this, "Sending OTP. Number not found in database.",Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -239,7 +260,7 @@ public class ResidentialActivity extends AppCompatActivity {
                     btnEntry.performClick();
                 }
                 else {
-                    Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -251,9 +272,11 @@ public class ResidentialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_residential);
         visitorDao = new FirebaseVisitorDao(this);
         otpService = new TwoFactorOTP(this);
+        smsService = new TwoFactorSMS(this);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
         society = "None";
+        phoneNumber = "9028759608";
         LocalBroadcastManager.getInstance(this).registerReceiver(otpMessageReceiver, new IntentFilter("otp-service"));
         LocalBroadcastManager.getInstance(this).registerReceiver(userInformationReceiver, new IntentFilter("visitor-exists"));
         ButterKnife.bind(this);
