@@ -38,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import entry.easyentry.R;
+import entry.easyentry.dao.FirebaseResidentDao;
 import entry.easyentry.dao.FirebaseVisitorDao;
 import entry.easyentry.models.Visitor;
 import entry.easyentry.services.OTPService;
@@ -49,18 +50,21 @@ import entry.easyentry.utils.Utils;
 public class ResidentialActivity extends AppCompatActivity {
 
     private FirebaseVisitorDao visitorDao;
+    private FirebaseResidentDao residentDao;
     private OTPService otpService;
     private SMSService smsService;
     private String sessionID;
     private FirebaseUser currentUser;
     private static final String TAG = "ResidentialActivity";
-    private String society; // TODO fetch society string from current user's records
+    private String society; // TODO fetch society string from current user's records. Store in shared preferences
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private String currentPhotoPath;
     private StorageReference storageReference;
     private Uri photoURI;
     private boolean isNumberVerified;
+
     private String phoneNumber;
+    private String name;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -94,8 +98,9 @@ public class ResidentialActivity extends AppCompatActivity {
         if (isNumberVerified){
             if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber))){
                 if (imageView.getDrawable()!=null) {
+                    residentDao.getResidentPhoneNumber(editTextFlatNumber.getText().toString(),society);
                     storeVisitor();
-                    smsService.sendSMS(phoneNumber, "Abhishek", editTextName.getText().toString());
+//                    smsService.sendSMS(phoneNumber, "Abhishek", editTextName.getText().toString());
                 }
                 else{
                     Toast.makeText(this,"Photo not taken. Storing data without photo",Toast.LENGTH_SHORT).show();
@@ -113,10 +118,6 @@ public class ResidentialActivity extends AppCompatActivity {
             Toast.makeText(this, "Number isn't verified. Verify number, try again.", Toast.LENGTH_SHORT).show();
         }
 
-        /*
-         TODO Send SMS to flat owner that visitor is here to see him
-         1. Get phone number to send sms to and use the sms service to achieve sending sms.
-         */
     }
 
     @OnClick(R.id.btnResidentialTakePhoto)
@@ -147,7 +148,12 @@ public class ResidentialActivity extends AppCompatActivity {
     @OnClick(R.id.btnResidentialSubmit)
     void submit(){
         String phoneNumber = editTextPhoneNumber.getText().toString();
-        visitorDao.checkIfVisitorExists(phoneNumber);
+//        if (phoneNumber.length()!=10) {
+//            Toast.makeText(this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
+//        }
+//        else {
+            visitorDao.checkIfVisitorExists(phoneNumber);
+//        }
     }
 
     @OnClick(R.id.btnResidentialVerifyPhoneNumber)
@@ -266,19 +272,37 @@ public class ResidentialActivity extends AppCompatActivity {
         }
     };
 
+    private BroadcastReceiver residentInformationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("name") && intent.hasExtra("phoneNumber")){
+                phoneNumber = intent.getStringExtra("phoneNumber");
+                name = intent.getStringExtra("name");
+                smsService.sendSMS(phoneNumber, name, editTextName.getText().toString());
+            }
+            else{
+                Toast.makeText(ResidentialActivity.this, "No information about flat found in database. SMS not sent", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_residential);
         visitorDao = new FirebaseVisitorDao(this);
+        residentDao = new FirebaseResidentDao(this);
         otpService = new TwoFactorOTP(this);
         smsService = new TwoFactorSMS(this);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
-        society = "None";
-        phoneNumber = "9028759608";
+        society = "none";
+
         LocalBroadcastManager.getInstance(this).registerReceiver(otpMessageReceiver, new IntentFilter("otp-service"));
         LocalBroadcastManager.getInstance(this).registerReceiver(userInformationReceiver, new IntentFilter("visitor-exists"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(residentInformationReceiver, new IntentFilter("send-resident-details"));
         ButterKnife.bind(this);
         editTextPhoneNumber.requestFocus(); //puts focus on the phone number
         editTextOTP.setVisibility(View.GONE);
@@ -289,6 +313,7 @@ public class ResidentialActivity extends AppCompatActivity {
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(otpMessageReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(userInformationReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(residentInformationReceiver);
         super.onDestroy();
     }
 }
