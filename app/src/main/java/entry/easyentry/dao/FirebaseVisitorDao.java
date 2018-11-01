@@ -2,6 +2,7 @@ package entry.easyentry.dao;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -20,16 +21,18 @@ public class FirebaseVisitorDao implements Dao<Visitor> {
     private DatabaseReference database;
     private Context context;
     private static final String TAG = "FirebaseVisitorDao";
+    private SharedPreferences settings;
 
     public FirebaseVisitorDao(Context context){
         database = FirebaseDatabase.getInstance().getReference();
         this.context = context;
+        settings = this.context.getSharedPreferences("entry.easyentry.preferences",Context.MODE_PRIVATE);
     }
 
 
     @Override
     public void writeRecord(Visitor visitor) {
-        database.child("visitors").push().setValue(visitor);
+        database.child("visitors").child(visitor.getSociety()).push().setValue(visitor);
     }
 
     @Override
@@ -50,7 +53,8 @@ public class FirebaseVisitorDao implements Dao<Visitor> {
     }
 
     public void checkIfVisitorExists(String phoneNumber){
-        Query query = database.child("visitors").orderByChild("phoneNumber").equalTo(phoneNumber).limitToFirst(1);
+        String societyName = settings.getString("SocietyName","missing");
+        Query query = database.child("visitors/"+societyName).orderByChild("phoneNumber").equalTo(phoneNumber).limitToFirst(1);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -150,12 +150,12 @@ public class ResidentialActivity extends AppCompatActivity {
     @OnClick(R.id.btnResidentialSubmit)
     void submit(){
         String phoneNumber = editTextPhoneNumber.getText().toString();
-        if (phoneNumber.length()!=10) {
-            Toast.makeText(this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
-        }
-        else {
+//        if (phoneNumber.length()!=10) {
+//            Toast.makeText(this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
+//        }
+//        else {
             visitorDao.checkIfVisitorExists(phoneNumber);
-        }
+//        }
     }
 
     @OnClick(R.id.btnResidentialVerifyPhoneNumber)
