@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -65,6 +66,7 @@ public class ResidentialActivity extends AppCompatActivity {
 
     private String phoneNumber;
     private String name;
+    private SharedPreferences settings;
 
     @BindView(R.id.editTextResidentialName)
     EditText editTextName;
@@ -148,12 +150,12 @@ public class ResidentialActivity extends AppCompatActivity {
     @OnClick(R.id.btnResidentialSubmit)
     void submit(){
         String phoneNumber = editTextPhoneNumber.getText().toString();
-//        if (phoneNumber.length()!=10) {
-//            Toast.makeText(this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
-//        }
-//        else {
+        if (phoneNumber.length()!=10) {
+            Toast.makeText(this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
+        }
+        else {
             visitorDao.checkIfVisitorExists(phoneNumber);
-//        }
+        }
     }
 
     @OnClick(R.id.btnResidentialVerifyPhoneNumber)
@@ -237,11 +239,8 @@ public class ResidentialActivity extends AppCompatActivity {
             Visitor v = (Visitor) intent.getExtras().getSerializable("visitor");
             if (doesNumberExist){
                 Log.d(TAG, "onReceive: Number exists");
-                Toast.makeText(ResidentialActivity.this,"This number exists in database. Not verifying",Toast.LENGTH_SHORT).show();
-                editTextFlatNumber.setText(v.getFlatNumber());
                 editTextName.setText(v.getName());
                 isNumberVerified = true;
-//                storeVisitor();
             }
             else {
                 editTextOTP.setVisibility(View.VISIBLE);
@@ -261,13 +260,9 @@ public class ResidentialActivity extends AppCompatActivity {
             }
             else if(method.equals("verifyOtp")){
                 isNumberVerified = intent.getBooleanExtra("otp-verified", false);
-                if (isNumberVerified){
-//                    storeVisitor();
-                    btnEntry.performClick();
-                }
-                else {
+                if(!isNumberVerified)
                     Toast.makeText(ResidentialActivity.this, "Number Verification failed",Toast.LENGTH_SHORT).show();
-                }
+
             }
         }
     };
@@ -298,12 +293,13 @@ public class ResidentialActivity extends AppCompatActivity {
         smsService = new TwoFactorSMS(this);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
-        society = "none";
 
         LocalBroadcastManager.getInstance(this).registerReceiver(otpMessageReceiver, new IntentFilter("otp-service"));
         LocalBroadcastManager.getInstance(this).registerReceiver(userInformationReceiver, new IntentFilter("visitor-exists"));
         LocalBroadcastManager.getInstance(this).registerReceiver(residentInformationReceiver, new IntentFilter("send-resident-details"));
         ButterKnife.bind(this);
+        settings = this.getSharedPreferences("entry.easyentry.preferences",Context.MODE_PRIVATE);
+        society = settings.getString("SocietyName","missing");
         editTextPhoneNumber.requestFocus(); //puts focus on the phone number
         editTextOTP.setVisibility(View.GONE);
         btnVerifyNumber.setVisibility(View.GONE);
