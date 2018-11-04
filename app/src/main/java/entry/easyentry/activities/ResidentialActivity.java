@@ -99,14 +99,16 @@ public class ResidentialActivity extends AppCompatActivity {
     void easyEntry(){
         if (isNumberVerified){
             if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber))){
+                // The following line fires a query to get the flat owner's phone number.
+                // The phoneNumberReceiver in this file receives it and uses it to trigger the sendSMS service.
+
+                residentDao.getResidentPhoneNumber(editTextFlatNumber.getText().toString(),society);
                 if (imageView.getDrawable()!=null) {
-                    residentDao.getResidentPhoneNumber(editTextFlatNumber.getText().toString(),society);
-                    storeVisitor();
-//                    smsService.sendSMS(phoneNumber, "Abhishek", editTextName.getText().toString());
+                    storeVisitor(true);
                 }
                 else{
                     Toast.makeText(this,"Photo not taken. Storing data without photo",Toast.LENGTH_SHORT).show();
-                    storeVisitor();
+                    storeVisitor(false);
 
                 }
 
@@ -210,16 +212,20 @@ public class ResidentialActivity extends AppCompatActivity {
         return image;
     }
 
-    private void storeVisitor(){
-
+    private void storeVisitor(boolean storePhoto){
+        Visitor visitor;
         String name = editTextName.getText().toString();
         String date = Utils.getCurrentDate();
         String flatNumber = editTextFlatNumber.getText().toString();
         String phoneNumber = editTextPhoneNumber.getText().toString();
         String timeIn = Utils.getCurrentTime();
-        String photoLocation = storeImageToFirebaseCloud();
-
-        Visitor visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society, photoLocation);
+        if (storePhoto) {
+            String photoLocation = storeImageToFirebaseCloud();
+            visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society, photoLocation);
+        }
+        else {
+            visitor = new Visitor(name, flatNumber, timeIn, date, phoneNumber, society, "none");
+        }
         visitorDao.writeRecord(visitor);
         Toast.makeText(this,"Visitor saved", Toast.LENGTH_LONG).show();
     }
