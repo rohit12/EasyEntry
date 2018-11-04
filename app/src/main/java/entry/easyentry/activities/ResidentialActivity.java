@@ -101,22 +101,25 @@ public class ResidentialActivity extends AppCompatActivity {
             if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber))){
                 // The following line fires a query to get the flat owner's phone number.
                 // The phoneNumberReceiver in this file receives it and uses it to trigger the sendSMS service.
-
                 residentDao.getResidentPhoneNumber(editTextFlatNumber.getText().toString(),society);
+                isNumberVerified = false;
                 if (imageView.getDrawable()!=null) {
                     storeVisitor(true);
                 }
                 else{
                     Toast.makeText(this,"Photo not taken. Storing data without photo",Toast.LENGTH_SHORT).show();
                     storeVisitor(false);
-
                 }
-
             }
-
             else{
                 Toast.makeText(this, "One of the fields has not been populated", Toast.LENGTH_SHORT).show();
             }
+            editTextOTP.setVisibility(View.INVISIBLE);
+            btnVerifyNumber.setVisibility(View.INVISIBLE);
+            editTextFlatNumber.getText().clear();
+            editTextName.getText().clear();
+            editTextPhoneNumber.getText().clear();
+
         }
         else {
             Toast.makeText(this, "Number isn't verified. Verify number, try again.", Toast.LENGTH_SHORT).show();
