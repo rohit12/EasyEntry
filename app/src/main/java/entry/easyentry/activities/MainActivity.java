@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnCommercial)
     void commercialClick(){
-
+        Intent intent = new Intent(this, CommercialActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.btnEnquriy)
