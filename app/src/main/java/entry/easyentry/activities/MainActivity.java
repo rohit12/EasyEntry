@@ -17,6 +17,8 @@ import entry.easyentry.R;
 public class MainActivity extends AppCompatActivity {
 
 
+    // TODO Check user's account for which features need to be enabled and disabled, i.e., disable commercial, enquiry or residential depending on user.
+
     @BindView(R.id.btnCommercial)
     Button btnCommercial;
 
