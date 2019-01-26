@@ -1,5 +1,6 @@
 package entry.easyentry.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import butterknife.OnClick;
 import entry.easyentry.R;
 import entry.easyentry.dao.FirebaseSocietyDao;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
     // TODO Add Firebase Crashalytics
 
