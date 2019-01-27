@@ -27,6 +27,10 @@
         <activity android:name=".activities.ResidentialActivity" />
         <activity android:name=".activities.MainActivity" />
 
+        <activity
+            android:name=".activities.NewVisitorRegister"
+            android:label="@string/title_activity_new_visitor_register"></activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="entry.easyentry"
@@ -37,7 +41,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".activities.CommercialActivity"></activity>
+        <activity android:name=".activities.CommercialActivity" />
+
     </application>
 
 </manifest>

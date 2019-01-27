@@ -16,6 +16,7 @@ import entry.easyentry.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "MainActivity";
 
     @BindView(R.id.btnCommercial)
     Button btnCommercial;
@@ -52,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btnEnquriy)
     void enquiryClick(){
 
+    }
+
+    @OnClick(R.id.newVisitor)
+    void onNewVisitorClick() {
+        Intent intent = new Intent(this, NewVisitorRegister.class);
+        startActivity(intent);
     }
 
     @Override
