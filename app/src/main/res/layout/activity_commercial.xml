@@ -1,15 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.CommercialActivity">
 
-    <FrameLayout
-        android:id="@+id/fragmentHolder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
+        android:id="@+id/btnCommercialLodging"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="8dp"
+        android:text="Lodging"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </FrameLayout>
-</LinearLayout>
+    <Button
+        android:id="@+id/btnCommercialSchool"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="School"
+        app:layout_constraintEnd_toEndOf="@+id/btnCommercialClinic"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/btnCommercialClinic"
+        app:layout_constraintTop_toBottomOf="@+id/btnCommercialClinic" />
+
+    <Button
+        android:id="@+id/btnCommercialClinic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Clinic"
+        app:layout_constraintEnd_toEndOf="@+id/btnCommercialCompany"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btnCommercialCompany"
+        app:layout_constraintTop_toBottomOf="@+id/btnCommercialCompany" />
+
+    <Button
+        android:id="@+id/btnCommercialCompany"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Company"
+        app:layout_constraintEnd_toEndOf="@+id/btnCommercialParking"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btnCommercialParking"
+        app:layout_constraintTop_toBottomOf="@+id/btnCommercialParking" />
+
+    <Button
+        android:id="@+id/btnCommercialParking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Parking"
+        app:layout_constraintEnd_toEndOf="@+id/btnCommercialLodging"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btnCommercialLodging"
+        app:layout_constraintTop_toBottomOf="@+id/btnCommercialLodging" />
+</android.support.constraint.ConstraintLayout>

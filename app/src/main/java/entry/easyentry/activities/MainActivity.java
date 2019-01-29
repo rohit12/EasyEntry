@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // TODO Check user's account for which features need to be enabled and disabled, i.e., disable commercial, enquiry or residential depending on user.
-
+    // TODO Date doesn't come out correct. Utils Date function needs to be debugged.
     @BindView(R.id.btnCommercial)
     Button btnCommercial;
 
