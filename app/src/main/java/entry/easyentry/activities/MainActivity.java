@@ -53,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.newVisitor)
+    void onNewVisitorClick() {
+        Intent intent = new Intent(this, NewVisitorRegister.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
