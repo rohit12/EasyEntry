@@ -1,112 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ResidentialActivity"
-    tools:layout_editor_absoluteY="81dp">
+    android:orientation="vertical"
+    tools:context=".activities.ResidentialActivity">
 
-    <EditText
-        android:id="@+id/editTextResidentialName"
-        android:layout_width="186dp"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageViewResidential"
+            android:layout_width="334dp"
+            android:layout_height="128dp"
+            android:layout_margin="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:contentDescription="Attach Image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnResidentialTakePhoto"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_person_black_24dp"
+            tools:srcCompat="@drawable/ic_person_black_24dp" />
+
+        <Button
+            android:id="@+id/btnResidentialTakePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Take Picture"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/Name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/editTextResidentialPhoneNumber"
-        app:layout_constraintStart_toStartOf="@+id/editTextResidentialPhoneNumber"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialPhoneNumber" />
+        android:layout_margin="16dp"
+        android:text="Resident's Information"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editTextResidentialFlatNumber"
-        android:layout_width="186dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_margin="16dp"
         android:ems="10"
         android:hint="Flat Number"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/editTextResidentialName"
-        app:layout_constraintStart_toStartOf="@+id/editTextResidentialName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialName" />
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Visitor's Information"
+        android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/editTextResidentialPhoneNumber"
-        android:layout_width="186dp"
+        android:id="@+id/editTextResidentialName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_margin="16dp"
         android:ems="10"
-        android:hint="Phone Number"
-        android:inputType="phone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="@string/Name"
+        android:inputType="textPersonName" />
 
-    <Button
-        android:id="@+id/btnResidentialSubmit"
-        android:layout_width="97dp"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/Submit"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextResidentialPhoneNumber"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editTextResidentialPhoneNumber" />
+        android:layout_margin="16dp">
 
-    <EditText
-        android:id="@+id/editTextResidentialOTP"
-        android:layout_width="131dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/OTP"
-        android:inputType="number"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/editTextResidentialFlatNumber"
-        app:layout_constraintHorizontal_bias="0.547"
-        app:layout_constraintStart_toStartOf="@+id/editTextResidentialFlatNumber"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialFlatNumber" />
+        <EditText
+            android:id="@+id/editTextResidentialPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:ems="10"
+            android:hint="Phone Number"
+            android:inputType="phone" />
 
-    <Button
-        android:id="@+id/btnResidentialVerifyPhoneNumber"
-        android:layout_width="126dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Verify Phone Number"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextResidentialOTP"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editTextResidentialOTP" />
+        <Button
+            android:id="@+id/btnResidentialSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/Submit"
+            app:layout_constraintStart_toEndOf="@+id/editTextResidentialPhoneNumber"
+            tools:layout_editor_absoluteY="0dp" />
+    </android.support.constraint.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/imageViewResidential"
-        android:layout_width="155dp"
-        android:layout_height="161dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextResidentialOTP"
-        tools:srcCompat="@tools:sample/avatars" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnResidentialTakePhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="Take Photo"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewResidential"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageViewResidential"
-        app:layout_constraintVertical_bias="0.504" />
+        <EditText
+            android:id="@+id/editTextVerificationOTP"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_margin="16dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="@string/OTP"
+            android:inputType="number"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="16dp" />
 
-    <Button
-        android:id="@+id/btnResidentialEntry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Easy Entry"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnResidentialTakePhoto"
-        app:layout_constraintStart_toEndOf="@+id/imageViewResidential" />
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/btnResidentialVerifyPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Verify Number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editTextVerificationOTP"
+            tools:layout_editor_absoluteY="16dp" />
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>

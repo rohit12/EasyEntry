@@ -27,8 +27,6 @@
         <activity android:name=".activities.ResidentialActivity" />
         <activity android:name=".activities.MainActivity"/>
 
-        <activity android:name=".activities.NewVisitorRegister" />
-        
         <provider
             android:authorities="entry.easyentry"
             android:name="android.support.v4.content.FileProvider"

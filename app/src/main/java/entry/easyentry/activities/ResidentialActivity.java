@@ -16,6 +16,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,14 +76,14 @@ public class ResidentialActivity extends AppCompatActivity {
     @BindView(R.id.editTextResidentialFlatNumber)
     EditText editTextFlatNumber;
 
-    @BindView(R.id.editTextResidentialOTP)
+    @BindView(R.id.editTextVerificationOTP)
     EditText editTextOTP;
 
     @BindView(R.id.editTextResidentialPhoneNumber)
     EditText editTextPhoneNumber;
 
     @BindView(R.id.btnResidentialSubmit)
-    Button btnSubmit;
+    Button btnVerify;
 
     @BindView(R.id.btnResidentialVerifyPhoneNumber)
     Button btnVerifyNumber;
@@ -89,13 +91,14 @@ public class ResidentialActivity extends AppCompatActivity {
     @BindView(R.id.btnResidentialTakePhoto)
     Button btnTakePhoto;
 
-    @BindView(R.id.btnResidentialEntry)
-    Button btnEntry;
+//    @BindView(R.id.btnResidentialEntry)
+//    Button btnEntry;
 
     @BindView(R.id.imageViewResidential)
     ImageView imageView;
 
-    @OnClick(R.id.btnResidentialEntry)
+//    @OnClick(R.id.btnResidentialEntry)
+
     void easyEntry(){
         if (isNumberVerified){
             if (!(Utils.isEditTextEmpty(editTextName) || Utils.isEditTextEmpty(editTextFlatNumber))){
@@ -291,6 +294,25 @@ public class ResidentialActivity extends AppCompatActivity {
     };
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.next, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nextButton) {
+            onNextMenuButtonClick();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void onNextMenuButtonClick() {
+        easyEntry();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
